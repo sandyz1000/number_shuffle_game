@@ -1,0 +1,9 @@
+1. Create a object and a method to execute each fuction
+2. Set the matrix from the HTML
+3. CReate a position method with Po_y-x
+4. Create a container method Co_y-x
+5. Create a global object 
+6. Create a modified object 
+7. After everymove modify the local object
+8. Compare with JSON.stringify and return true or false
+9. 
