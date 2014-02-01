@@ -140,13 +140,61 @@ var clickOnContainer = function(e){
 	}
 }
 
+//we need an object to populate the initial grid
+var initGrid = {
+	
+	blankPos : -1,
+	availPos : [],
+	
+	generateArray : function(rows,cols){
+		this.blankPos = -1;
+		var n = rows*cols;
+		var newArray = [];
+		for(var i=1;i<n;i++){
+			newArray.push(i);
+		}
+		newArray.push("");
+		this.blankPos = n-1;
+		this.updateAvailablePos(rows,cols,-1);
+		for(var i=0;i<n*n;i++){
+			var index = Math.floor(Math.random()*this.availPos.length);
+			var prevPos = this.blankPos;
+			newArray[this.blankPos] = newArray[this.availPos[index]];
+			newArray[this.availPos[index]] = "";
+			this.blankPos = this.availPos[index];
+			this.updateAvailablePos(rows,cols,prevPos);
+		}
+		return newArray;
+	},
+	
+	updateAvailablePos : function(rows,cols,prevPos){
+		var x = Math.floor(this.blankPos/cols);
+		var y = this.blankPos%cols;
+		this.availPos = [];
+		if(x>0 && (((x-1)*cols)+y)!=prevPos){
+			this.availPos.push(((x-1)*cols)+y);
+		}
+		if(y>0 && ((x*cols)+y-1)!=prevPos){
+			this.availPos.push((x*cols)+y-1);
+		}
+		if(x<rows-1 && (((x+1)*cols)+y)!=prevPos){
+			this.availPos.push(((x+1)*cols)+y);
+		}
+		if(y<cols-1 && ((x*cols)+y+1)!=prevPos){
+			this.availPos.push((x*cols)+y+1);
+		}
+	}
+
+}
+
 
 var startGame = function(){
 
 	var rowsInput = parseInt(document.getElementById('rowsInput').value);
 	var colsInput = parseInt(document.getElementById('colsInput').value);
 	//Create a glb Random number to the size of the puzzle
-	var randomNum = shuffleGame.createGlbRandomObj(rowsInput, colsInput);
+	//var randomNum = shuffleGame.createGlbRandomObj(rowsInput, colsInput);
+	var randomNum = initGrid.generateArray(rowsInput,colsInput);
 	shuffleGame.init(rowsInput, colsInput);
 	
 	var temp = null; var rowsEle = "";
@@ -178,11 +226,11 @@ var handleOnLoad = function(cols, rows) {
 	var colsDropdown = '<select id="colsInput">'; var inputBtn;
 	
 	for(var xx=0; xx<cols; xx++){
-		rowsDropdown += '<option value="'+(xx+3)+'">'+(xx+3)+'</option>';
+		rowsDropdown += '<option value="'+(xx+2)+'">'+(xx+2)+'</option>';
 	}
 
 	for(var xx=0; xx<rows; xx++){
-		colsDropdown += '<option value="'+(xx+3)+'">'+(xx+3)+'</option>';
+		colsDropdown += '<option value="'+(xx+2)+'">'+(xx+2)+'</option>';
 	}
 
 	rowsDropdown += '</select>';
