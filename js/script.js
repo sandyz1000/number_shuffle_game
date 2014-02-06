@@ -187,14 +187,16 @@ var initGrid = {
 
 }
 
+var finalArray = [];
 
 var startGame = function(){
 
 	var rowsInput = parseInt(document.getElementById('rowsInput').value);
-	var colsInput = parseInt(document.getElementById('colsInput').value);
+	var colsInput = rowsInput;
 	//Create a glb Random number to the size of the puzzle
 	//var randomNum = shuffleGame.createGlbRandomObj(rowsInput, colsInput);
 	var randomNum = initGrid.generateArray(rowsInput,colsInput);
+	finalArray = randomNum.clone();
 	shuffleGame.init(rowsInput, colsInput);
 	
 	var temp = null; var rowsEle = "";
@@ -220,23 +222,40 @@ var startGame = function(){
 
 };
 
+var solveGame = function(){
+	var inputArray = [];
+	var len = document.getElementsByClassName("container").length;
+	for(var i=0;i<len;i++){
+		var val = document.getElementsByClassName("container")[i].textContent;
+		if(!isNaN(parseInt(val,10))){
+			val = parseInt(val,10);
+		}
+		inputArray.push(val);
+	}
+	if(inputArray.length>0){
+		var size = Math.sqrt(inputArray.length);
+		solver.initGame(inputArray,size);
+	}
+}
+
 var handleOnLoad = function(cols, rows) {
 	
 	var rowsDropdown = '<select id="rowsInput">';
 	var colsDropdown = '<select id="colsInput">'; var inputBtn;
 	
 	for(var xx=0; xx<cols; xx++){
-		rowsDropdown += '<option value="'+(xx+2)+'">'+(xx+2)+'</option>';
+		rowsDropdown += '<option value="'+(xx+3)+'">'+(xx+3)+' x '+ (xx+3)+'</option>';
 	}
 
-	for(var xx=0; xx<rows; xx++){
+	/*for(var xx=0; xx<rows; xx++){
 		colsDropdown += '<option value="'+(xx+2)+'">'+(xx+2)+'</option>';
-	}
+	}*/
 
 	rowsDropdown += '</select>';
-	colsDropdown += '</select>';
-	inputBtn = '<input type="button" value="Start" onclick="startGame()" />';	
-	document.getElementById('inputContr').innerHTML = colsDropdown+rowsDropdown+inputBtn;
+	//colsDropdown += '</select>';
+	inputBtn = '<input type="button" value="Start" onclick="startGame()" />';
+	solveBtn = '<input type="button" value="Solve" onclick="solveGame()" />';
+	document.getElementById('inputContr').innerHTML = rowsDropdown+inputBtn+solveBtn;
 }
 
 
